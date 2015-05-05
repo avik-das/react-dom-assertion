@@ -1,0 +1,18 @@
+{
+  "name": "react-dom-assertion",
+  "version": "0.0.1",
+  "description": "A DOM comparison library intended to make testing React components easier by comparing only the parts that will typically need to be validated in such components.",
+  "author": "Avik Das <avik.das@berkeley.edu>",
+  "scripts": {
+    "test": "mocha"
+  },
+  "main": "src/index.js",
+  "dependencies": {
+    "jsdom": "^3.x"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "chai": "*"
+  },
+  "license": "BSD"
+}
