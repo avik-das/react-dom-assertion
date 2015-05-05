@@ -13,27 +13,48 @@ function assertSameTagName(expected, actual) {
   }
 }
 
+function getNullableAttributeValue(elem, attrName) {
+  var value = elem.getAttribute(attrName) || null;
+
+  // It turns out that if an attribute is set via:
+  //
+  //   elem.setAttribute(attrName, null);
+  //
+  // then, when retrieving that attribute, the value doesn't come back as null,
+  // but as the _string_ "null". This is what happens in the case of React and
+  // JSX apparently, so we'll assume that no one is setting the value to be the
+  // string "null" deliberately.
+  if (value === 'null') {
+    value = null;
+  }
+
+  return value;
+}
+
 function assertSameId(expected, actual) {
   var tagName = expected.tagName.toLowerCase();
 
-  if (expected.id && !actual.id) {
+  var expectedId = getNullableAttributeValue(expected, 'id');
+  var actualId = getNullableAttributeValue(actual, 'id');
+
+  if (expectedId && !actualId) {
     throw new DOMCompareError(
-      'expected tag ' + tagName + ' to have id: ' + expected.id +
+      'expected tag ' + tagName + ' to have id: ' + expectedId +
         ' but no id present'
     );
   }
 
-  if (!expected.id && actual.id) {
+  if (!expectedId && actualId) {
     throw new DOMCompareError(
       'expected tag ' + tagName + ' to not have id' +
-        ' but got: ' + actual.id
+        ' but got: ' + actualId
     );
   }
 
-  if (expected.id != actual.id) {
+  if (expectedId !== actualId) {
     throw new DOMCompareError(
-      'expected tag ' + tagName + ' to have id: ' + expected.id +
-        ' but got: ' + actual.id
+      'expected tag ' + tagName + ' to have id: ' + expectedId +
+        ' but got: ' + actualId
     );
   }
 }

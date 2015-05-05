@@ -103,6 +103,17 @@ describe('reactDomAssertion', function() {
       reactDomAssertion.assertSameAsString(expected, ea);
     });
 
+    it('handles empty-like IDs', function() {
+      var expected = '<element-a id="" />';
+
+      var document = jsdom('');
+
+      var ea = document.createElement('element-a');
+      ea.setAttribute('id', null);
+
+      reactDomAssertion.assertSameAsString(expected, ea);
+    });
+
     it('flags an invalid root element', function() {
       var expected =
         '<element-a id="element-a-id">\n' +
