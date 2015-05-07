@@ -4,7 +4,7 @@
   "description": "A DOM comparison library intended to make testing React components easier by comparing only the parts that will typically need to be validated in such components.",
   "author": "Avik Das <avik.das@berkeley.edu>",
   "scripts": {
-    "test": "mocha"
+    "test": "eslint . && mocha"
   },
   "main": "src/index.js",
   "dependencies": {
@@ -12,7 +12,8 @@
   },
   "devDependencies": {
     "mocha": "*",
-    "chai": "*"
+    "chai": "*",
+    "eslint": "*"
   },
   "license": "BSD"
 }

@@ -5,7 +5,7 @@ var DOMCompareError = Error;
 function assertSameTagName(expected, actual) {
   var expectedTagName = expected.tagName.toLowerCase();
   var actualTagName = actual.tagName.toLowerCase();
-  if (expectedTagName != actualTagName) {
+  if (expectedTagName !== actualTagName) {
     throw new DOMCompareError(
       'expected tag: ' + expectedTagName +
         ' but got: ' + actualTagName
@@ -76,7 +76,7 @@ function assertSameClass(expected, actual) {
     );
   }
 
-  if (expected.className != actual.className) {
+  if (expected.className !== actual.className) {
     throw new DOMCompareError(
       'expected tag ' + tagName + ' to have class: ' + expected.className +
         ' but got: ' + actual.className
@@ -99,13 +99,12 @@ function getLogicalChildren(node) {
     return children;
   }
 
-  var i = 0;
   for (var child = node.firstChild; child; child = child.nextSibling) {
-    if (child.nodeType === node.TEXT_NODE && child.textContent.trim() == '') {
+    if (child.nodeType === node.TEXT_NODE && child.textContent.trim() === '') {
       continue;
     }
 
-    if (child.nodeType == node.COMMENT_NODE) {
+    if (child.nodeType === node.COMMENT_NODE) {
       continue;
     }
 
@@ -132,7 +131,7 @@ function assertSameDOMs(expected, actual) {
     var expectedChildren = getLogicalChildren(expected);
     var actualChildren = getLogicalChildren(actual);
 
-    if (expectedChildren.length != actualChildren.length) {
+    if (expectedChildren.length !== actualChildren.length) {
       throw new DOMCompareError(
         'expected tag ' + tagName + ' to have ' + expectedChildren.length +
           ' children but got ' + actualChildren.length
@@ -148,7 +147,7 @@ function assertSameDOMs(expected, actual) {
     var expectedText = expected.textContent.trim();
     var actualText = actual.textContent.trim();
 
-    if (expectedText != actualText) {
+    if (expectedText !== actualText) {
       throw new DOMCompareError(
         'mismatched text content: ' + expectedText +
           ' != ' + actualText
