@@ -3,6 +3,15 @@
   "version": "0.5.0",
   "description": "A DOM comparison library intended to make testing React components easier by comparing only the parts that will typically need to be validated in such components.",
   "author": "Avik Das <avik.das@berkeley.edu>",
+  "repository": "avik-das/react-dom-assertion",
+  "bugs": {
+    "url": "https://github.com/avik-das/react-dom-assertion/issues"
+  },
+  "keywords": [
+    "dom",
+    "react",
+    "testing"
+  ],
   "scripts": {
     "test": "eslint . && mocha"
   },
