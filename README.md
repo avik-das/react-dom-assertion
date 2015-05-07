@@ -63,3 +63,12 @@ One of the crucial dependencies for this library is [jsdom](https://www.npmjs.co
 > Note that as of our 4.0.0 release, jsdom no longer works with Node.js&trade; and instead requires io.js. You are still welcome to install a release in the 3.x series if you use Node.js&trade;
 
 Because the code base this library is being tested with still uses node.js, the version of jsdom used is 3.x.
+
+Contributing
+------------
+
+1. Fork the repository.
+1. Make your changes.
+1. Update the tests.
+1. Make sure all the tests pass: `npm test`
+1. Create a pull request against [avik-das/react-dom-assertion](https://github.com/avik-das/react-dom-assertion).
