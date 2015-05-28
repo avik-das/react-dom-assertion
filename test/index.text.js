@@ -331,6 +331,148 @@ describe('reactDomAssertion', function() {
       }).to.throw(/expected tag element-a to not have class but got: element-a-class/);
     });
 
+    it('correctly reports a mismatched checked attribute', function() {
+      var expected = '<element-a href="href-value" />';
+      var document = jsdom('');
+
+      var ea = document.createElement('element-a');
+      ea.setAttribute('href', 'wrong-href-value');
+
+      expect(function() {
+        reactDomAssertion.assertSameAsString(expected, ea);
+      }).to.throw(/expected tag element-a to have href: href-value but got: wrong-href-value/);
+    });
+
+    it('correctly reports a missing checked attribute', function() {
+      var expected = '<element-a href="href-value" />';
+      var document = jsdom('');
+
+      var ea = document.createElement('element-a');
+
+      expect(function() {
+        reactDomAssertion.assertSameAsString(expected, ea);
+      }).to.throw(/expected tag element-a to have href: href-value but no href present/);
+    });
+
+    it('correctly reports an unexpected checked attribute', function() {
+      var expected = '<element-a />';
+      var document = jsdom('');
+
+      var ea = document.createElement('element-a');
+      ea.setAttribute('href', 'href-value');
+
+      expect(function() {
+        reactDomAssertion.assertSameAsString(expected, ea);
+      }).to.throw(/expected tag element-a to not have href but got: href-value/);
+    });
+
+    it('ignores unchecked attribute mismatches', function() {
+      var expected = '<element-a />';
+      var document = jsdom('');
+
+      var ea = document.createElement('element-a');
+      ea.setAttribute('onclick', 'onclick-handler');
+
+      reactDomAssertion.assertSameAsString(expected, ea);
+    });
+
+    it('recognizes passed in additional checked attributes', function() {
+      var expected = '<element-a />';
+      var document = jsdom('');
+
+      var ea = document.createElement('element-a');
+      ea.setAttribute('onclick', 'onclick-handler');
+
+      expect(function() {
+        reactDomAssertion.assertSameAsString(expected, ea, {
+          additionalCheckedAttributes: ['onclick']
+        });
+      }).to.throw(/expected tag element-a to not have onclick but got: onclick-handler/);
+    });
+
+    it('continues checking default checked attributes when additional ones are passed in', function() {
+      var expected = '<element-a />';
+      var document = jsdom('');
+
+      var ea = document.createElement('element-a');
+      ea.id = 'unexpected-id';
+
+      expect(function() {
+        reactDomAssertion.assertSameAsString(expected, ea, {
+          additionalCheckedAttributes: ['onclick']
+        });
+      }).to.throw(/expected tag element-a to not have id but got: unexpected-id/);
+    });
+
+    it('recognizes passed in replacement checked attributes', function() {
+      var expected = '<element-a />';
+      var document = jsdom('');
+
+      var ea = document.createElement('element-a');
+      ea.setAttribute('onclick', 'onclick-handler');
+
+      expect(function() {
+        reactDomAssertion.assertSameAsString(expected, ea, {
+          checkedAttributes: ['onclick']
+        });
+      }).to.throw(/expected tag element-a to not have onclick but got: onclick-handler/);
+    });
+
+    it('does not check default checked attributes when replacement ones are passed in', function() {
+      var expected = '<element-a />';
+      var document = jsdom('');
+
+      var ea = document.createElement('element-a');
+      ea.id = 'unexpected-id';
+
+      reactDomAssertion.assertSameAsString(expected, ea, {
+        checkedAttributes: ['onclick']
+      });
+    });
+
+    it('checks replacement checked attributes when they and additional ones are passed in', function() {
+      var expected = '<element-a />';
+      var document = jsdom('');
+
+      var ea = document.createElement('element-a');
+      ea.setAttribute('onclick', 'onclick-handler');
+
+      expect(function() {
+        reactDomAssertion.assertSameAsString(expected, ea, {
+          checkedAttributes: ['onclick'],
+          additionalCheckedAttributes: ['align']
+        });
+      }).to.throw(/expected tag element-a to not have onclick but got: onclick-handler/);
+    });
+
+    it('checks additional checked attributes when they and replacement ones are passed in', function() {
+      var expected = '<element-a />';
+      var document = jsdom('');
+
+      var ea = document.createElement('element-a');
+      ea.setAttribute('align', 'left');
+
+      expect(function() {
+        reactDomAssertion.assertSameAsString(expected, ea, {
+          checkedAttributes: ['onclick'],
+          additionalCheckedAttributes: ['align']
+        });
+      }).to.throw(/expected tag element-a to not have align but got: left/);
+    });
+
+    it('does not check default checked attributes when replacement and additional ones are passed in', function() {
+      var expected = '<element-a />';
+      var document = jsdom('');
+
+      var ea = document.createElement('element-a');
+      ea.id = 'unexpected-id';
+
+      reactDomAssertion.assertSameAsString(expected, ea, {
+        checkedAttributes: ['onclick'],
+        additionalCheckedAttributes: ['align']
+      });
+    });
+
     it('correctly reports mismatched text content', function() {
       var expected = '<element-a>element-a-text</element-a>';
       var document = jsdom('');

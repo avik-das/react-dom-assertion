@@ -34,10 +34,36 @@ Features
 --------
 
 * Provide a string representation of your expected DOM tree in a string format in tests.
-* Compare element `id` and `class` attributes, ignore other attributes that may be added by React during DOM construction.
+* Compare a (configurable) list of attributes attributes, ignore other attributes that may be added by React during DOM construction.
 * Ignore whitespace when comparing text.
 
 Note that this library is built to serve the needs of actual tests, so there are many missing features. They will be developed as the need arises instead of pre-emptively predicting the need. Feature requests and pull requests are welcome, however.
+
+Comparing attributes
+--------------------
+
+It's typical to want to ensure that the constructed DOM elements contain the correct IDs, classes, and other attributes, such as `src` for images. However, React (or possibly other integrated libraries) may add in other attributes, like `data-reactid`, which should not be checked.
+
+`react-dom-assertion` will automatically compare a subset of attributes chosen as semantic attributes. These attributes are chosen because they are likely to be useful if checked. However, if this list doesn't work for you, can amend it by passing in an `additionalCheckedAttributes` list or replace the list completely with a `checkedAttributes` list:
+
+```js
+
+reactDomAssertion.assertSameAsString(expected, actual, {
+  // keep checking 'id', 'class', etc., but also check the following:
+  additionalCheckedAttributes: [
+    'height',
+    'width'
+  ]
+});
+
+reactDomAssertion.assertSameAsString(expected, actual, {
+  // don't check 'id', 'class', etc. at all. Instead check only the following:
+  checkedAttributes: [
+    'height',
+    'width'
+  ]
+});
+```
 
 Integration with jest
 ---------------------
