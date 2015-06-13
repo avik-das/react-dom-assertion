@@ -20,6 +20,54 @@ var DEFAULT_CHECKED_ATTRIBUTES = [
   'checked'
 ];
 
+function prettyPrintedLines(node, options) {
+  options = options || {};
+  options.checkedAttributes = options.checkedAttributes || [];
+
+  if (node.nodeType === node.TEXT_NODE) {
+    return [node.textContent.trim()];
+  }
+
+  var name = node.nodeName.toLowerCase();
+  var children = getLogicalChildren(node);
+
+  var attributeStr = options
+    .checkedAttributes
+    .filter(function(attrName) {
+      return node.hasAttribute(attrName);
+    })
+    .map(function(attrName) {
+      return attrName + '="' + node.getAttribute(attrName) + '"';
+    })
+    .join(' ');
+
+  if (attributeStr) {
+    attributeStr = ' ' + attributeStr;
+  }
+
+  if (children.length === 0) {
+    return ['<' + name + attributeStr + '/>'];
+  }
+
+  var lines = [];
+  lines.push('<' + name + attributeStr + '>');
+
+  children.forEach(function(child) {
+    var childLines = prettyPrintedLines(child, options);
+    childLines.forEach(function(childLine) {
+      lines.push('  ' + childLine);
+    });
+  });
+
+  lines.push('</' + name + '>');
+
+  return lines;
+}
+
+function prettyPrinted(node, options) {
+  return prettyPrintedLines(node, options).join('\n');
+}
+
 function assertSameTagName(expected, actual) {
   var expectedTagName = expected.tagName.toLowerCase();
   var actualTagName = actual.tagName.toLowerCase();
@@ -118,7 +166,24 @@ function assertSameAsString(expectedStr, actualDOM, options) {
     .children
     .item(0);
 
-  assertSameDOMs(expectedDOM, actualDOM, processedOptions);
+  try {
+    assertSameDOMs(expectedDOM, actualDOM, processedOptions);
+  } catch (e) {
+    if (!(e instanceof DOMCompareError)) {
+      throw e;
+    }
+
+    // Make sure to manually print out both the expected and actual DOM trees so
+    // they're both printed with the same formatting. This helps minimize the
+    // number of unnecessary artifacts in the diff.
+    //
+    // Setting these fields makes sure mocha shows the diff. For other testing
+    // frameworks, YMMV.
+    e.showDiff = true;
+    e.expected = prettyPrinted(expectedDOM, processedOptions);
+    e.actual = prettyPrinted(actualDOM, processedOptions);
+    throw e;
+  }
 }
 
 function getLogicalChildren(node) {
