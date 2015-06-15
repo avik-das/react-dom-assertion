@@ -65,6 +65,31 @@ reactDomAssertion.assertSameAsString(expected, actual, {
 });
 ```
 
+Handling HTML entities
+----------------------
+
+The JSX compiler replaces HTML entities with their Unicode equivalents. This means you need to use Unicode characters in your tests:
+
+```js
+// In your component's render function:
+return (<span>&laquo;quoted&raquo;</span>);
+
+// In your test:
+var expected = '<span>«quoted»</span>';
+```
+
+You can use the [five pre-defined XML entities](https://en.wikipedia.org/?title=List_of_XML_and_HTML_character_entity_references#Predefined_entities_in_XML) if needed in your tests:
+
+```js
+// In your component's render function:
+return (<span>&lt;quoted&gt;</span>);
+
+// In your test (notice that &lt; and &gt; have to be escaped):
+var expected = '<span>&lt;quoted&gt;</span>';
+```
+
+You can use the [online JSX compiler](https://facebook.github.io/react/jsx-compiler.html) to see what is actually being rendered in your component.
+
 Integration with jest
 ---------------------
 
