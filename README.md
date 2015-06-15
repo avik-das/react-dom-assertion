@@ -36,6 +36,7 @@ Features
 * Provide a string representation of your expected DOM tree in a string format in tests.
 * Compare a (configurable) list of attributes attributes, ignore other attributes that may be added by React during DOM construction.
 * Ignore whitespace when comparing text.
+* Automatically integrate with Mocha to show a visual diff in case of a mismatch.
 
 Note that this library is built to serve the needs of actual tests, so there are many missing features. They will be developed as the need arises instead of pre-emptively predicting the need. Feature requests and pull requests are welcome, however.
 
@@ -47,7 +48,6 @@ It's typical to want to ensure that the constructed DOM elements contain the cor
 `react-dom-assertion` will automatically compare a subset of attributes chosen as semantic attributes. These attributes are chosen because they are likely to be useful if checked. However, if this list doesn't work for you, can amend it by passing in an `additionalCheckedAttributes` list or replace the list completely with a `checkedAttributes` list:
 
 ```js
-
 reactDomAssertion.assertSameAsString(expected, actual, {
   // keep checking 'id', 'class', etc., but also check the following:
   additionalCheckedAttributes: [
@@ -71,15 +71,38 @@ Integration with jest
 If you're working React, it's possible you're using [jest](https://facebook.github.io/jest/) as the testing framework. If so, note that you have to [import `react-dom-assertion` without mocking out its dependencies](https://facebook.github.io/jest/docs/api.html#jest-automockoff):
 
 ```js
-jest.autoMockOff()
+jest.autoMockOff();
 const reactDomAssertion = require('react-dom-assertion');
-jest.autoMockOn()
+jest.autoMockOn();
 
 // or
 
 jest.dontMock('react-dom-assertion');
 const reactDomAssertion = require('react-dom-assertion');
 ```
+
+Integration with Jasmine 1.x (including Jest)
+---------------------------------------------
+
+At the time of this writing, [Jest still uses Jasmine 1.3.0](https://github.com/facebook/jest/tree/1dab731d1ede877392622f68ae51772a0c3fde6b/vendor/jasmine). Because of this, `react-dom-assertion` supports a custom matcher for Jasmine 1.x:
+
+```js
+var reactDomAssertion = require('react-dom-assertion');
+
+// Inside your `describe` block:
+beforeEach(reactDomAssertion.jasmine1xMatchers);
+
+// Inside your test:
+var rendered = TestUtils.renderIntoDocument(<MyComponent />)
+expect(rendered.getDOMNode()).toMatchDOMString(expectedString);
+
+// You can pass in options as well:
+expect(rendered.getDOMNode()).toMatchDOMString(expectedString, { /* options */ });
+```
+
+The custom matcher also prints both the expected and the actual DOM trees if the matching fails. No visual diff is shown for the purposes of simplicity.
+
+*There is currently no Jasmine 2.x support.*
 
 node.js compatibility
 ---------------------

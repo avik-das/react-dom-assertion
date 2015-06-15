@@ -260,3 +260,6 @@ function assertSameDOMs(expected, actual, options) {
 }
 
 module.exports.assertSameAsString = assertSameAsString;
+
+var jasmineMatchers = require('./jasmineMatchers');
+module.exports.jasmine1xMatchers = jasmineMatchers.jasmine1xMatchers;
