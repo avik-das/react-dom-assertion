@@ -82,6 +82,18 @@ describe('reactDomAssertion', function() {
       reactDomAssertion.assertSameAsString(expected, ea);
     });
 
+    it('handles attributes without values', function() {
+      var expected = '<element-a attr-without-value />';
+      var document = jsdom('');
+
+      var ea = document.createElement('element-a');
+      ea.setAttribute('attr-without-value', '');
+
+      reactDomAssertion.assertSameAsString(expected, ea, {
+        additionalCheckedAttributes: ['attr-without-value']
+      });
+    });
+
     it('ignores comments', function() {
       var expected =
         '<element-a>\n' +
@@ -104,7 +116,7 @@ describe('reactDomAssertion', function() {
     });
 
     it('handles empty-like IDs', function() {
-      var expected = '<element-a id="" />';
+      var expected = '<element-a />';
 
       var document = jsdom('');
 
@@ -329,6 +341,47 @@ describe('reactDomAssertion', function() {
       expect(function() {
         reactDomAssertion.assertSameAsString(expected, ea);
       }).to.throw(/expected tag element-a to not have class but got: element-a-class/);
+    });
+
+    it('correctly flags a missing attribute without a value', function() {
+      var expected =
+        '<element-a>\n' +
+        '  <element-b attr-without-value />\n' +
+        '</element-a>';
+
+      var document = jsdom('');
+
+      var ea = document.createElement('element-a');
+
+      var eb = document.createElement('element-b');
+      ea.appendChild(eb);
+
+      expect(function() {
+        reactDomAssertion.assertSameAsString(expected, ea, {
+          additionalCheckedAttributes: ['attr-without-value']
+        });
+      }).to.throw(/expected tag element-b to have attr-without-value:  but no attr-without-value present/);
+    });
+
+    it('correctly flags an unexpected attribute without a value', function() {
+      var expected =
+        '<element-a>\n' +
+        '  <element-b />\n' +
+        '</element-a>';
+
+      var document = jsdom('');
+
+      var ea = document.createElement('element-a');
+
+      var eb = document.createElement('element-b');
+      eb.setAttribute('attr-without-value', '');
+      ea.appendChild(eb);
+
+      expect(function() {
+        reactDomAssertion.assertSameAsString(expected, ea, {
+          additionalCheckedAttributes: ['attr-without-value']
+        });
+      }).to.throw(/expected tag element-b to not have attr-without-value but got: /);
     });
 
     it('correctly reports a mismatched checked attribute', function() {

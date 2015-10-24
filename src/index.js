@@ -80,7 +80,7 @@ function assertSameTagName(expected, actual) {
 }
 
 function getNullableAttributeValue(elem, attrName) {
-  var value = elem.getAttribute(attrName) || null;
+  var value = elem.getAttribute(attrName);
 
   // It turns out that if an attribute is set via:
   //
@@ -103,14 +103,14 @@ function assertSameAttribute(expected, actual, attributeName) {
   var expectedAttribute = getNullableAttributeValue(expected, attributeName);
   var actualAttribute = getNullableAttributeValue(actual, attributeName);
 
-  if (expectedAttribute && !actualAttribute) {
+  if (expectedAttribute !== null && actualAttribute === null) {
     throw new DOMCompareError(
       'expected tag ' + tagName + ' to have ' + attributeName + ': ' +
         expectedAttribute + ' but no ' + attributeName + ' present'
     );
   }
 
-  if (!expectedAttribute && actualAttribute) {
+  if (expectedAttribute === null && actualAttribute !== null) {
     throw new DOMCompareError(
       'expected tag ' + tagName + ' to not have ' + attributeName +
         ' but got: ' + actualAttribute
